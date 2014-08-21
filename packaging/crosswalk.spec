@@ -267,6 +267,11 @@ ln -sf %{_libdir}/xwalk/xwalk_backend_wrapper.sh /etc/package-manager/backend/wg
 [ -L /etc/package-manager/backend/xpk ] && rm /etc/package-manager/backend/xpk
 [ -L /etc/package-manager/backend/wgt ] && rm /etc/package-manager/backend/wgt
 
+f="'%{_sysconfdir}/profile.d/%{name}.sh"
+mkdir -p "%{_sysconfdir}/profile.d"
+grep --silent OZONE_WAYLAND_USE_XDG_SHELL "$f" \
+    || printf "\nOZONE_WAYLAND_USE_XDG_SHELL='defined'\nexport OZONE_WAYLAND_USE_XDG_SHELL\n" >> "$f"
+
 %files
 %manifest %{name}.manifest
 %license AUTHORS.chromium LICENSE.chromium LICENSE.xwalk
@@ -291,3 +296,4 @@ ln -sf %{_libdir}/xwalk/xwalk_backend_wrapper.sh /etc/package-manager/backend/wg
 %{_dbusservicedir}/org.crosswalkproject.Runtime1.service
 %{_systemduserservicedir}/xwalk.service
 %{_datadir}/xwalk/*
+%ghost %{_sysconfdir}/profile.d/%{name}.sh
